@@ -3,10 +3,18 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var session = require('express-session');
+require('dotenv').config();
 
-var indexRouter = require('./routes/index');
+const AdminBro = require('admin-bro');
+const AdminBroMongoose = require('@admin-bro/mongoose');
+const AdminBroExpress = require('@admin-bro/express');
+
+// var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var productRouter = require('./routes/product.route');
+
+const Products = require('./models/product.model');
 
 var app = express();
 
@@ -18,19 +26,71 @@ app.use(function(req, res, next) {
   );
   next();
 });
-
+AdminBro.registerAdapter(AdminBroMongoose);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+const adminBro = new AdminBro({
+  rootPath: '/admin',
+  logoutPath: '/admin/logout',
+  loginPath: '/admin/login',
+  resources: [Products],
+  dashboard: {
+    handler: async () => {
+      return { some: 'output' }
+    },
+    component: AdminBro.bundle('./component/my-dashboard-component')
+  },
+  branding: {
+    logo:
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Netflix_logo.svg/800px-Netflix_logo.svg.png',
+    companyName: 'Farmi',
+    favicon: 'https://www.flaticon.com/svg/static/icons/svg/870/870910.svg',
+  },
+  
+});
+
+const ADMIN = {
+  email: process.env.ADMIN_EMAIL,
+  password: process.env.ADMIN_PASSWORD,
+};
+
+// const router = AdminBroExpress.buildRouter(adminBro);
+
+const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+  authenticate: async (email, password) => {
+    if (ADMIN.password === password && ADMIN.email === email) {
+      return ADMIN
+    }
+    return null
+  },
+  cookieName: 'adminbro',
+  cookiePassword: 'somePassword',
+});
+
+
+app.use(session({
+  secret: process.env.COOKIE_SECRET,
+  resave: false,
+  saveUninitialized: true
+}));
+
+app.use(adminBro.options.rootPath, router);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', productRouter);
 app.use('/users', usersRouter);
+
+
+
 
 
 
