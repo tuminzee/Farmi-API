@@ -47,9 +47,9 @@ const adminBro = new AdminBro({
   },
   branding: {
     logo:
-      'https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Netflix_logo.svg/800px-Netflix_logo.svg.png',
+      './public/images/logo.png',
     companyName: 'Farmi',
-    favicon: 'https://www.flaticon.com/svg/static/icons/svg/870/870910.svg',
+    favicon: './public/images/Logo.svg',
   },
   
 });

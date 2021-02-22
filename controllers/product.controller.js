@@ -10,7 +10,6 @@ exports.findAll =  (req, res) => {
     });
 };
 
-
 exports.findOne = (req, res) => {
     Product.findById(req.params.id, function (err, docs) { 
         if (err){ 
