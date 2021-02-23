@@ -47,9 +47,10 @@ const adminBro = new AdminBro({
   },
   branding: {
     logo:
-      './public/images/logo.png',
+      'https://i.ibb.co/JRzSXNS/logo.png',
     companyName: 'Farmi',
-    favicon: './public/images/Logo.svg',
+    favicon: 'https://i.ibb.co/JRzSXNS/logo.png',
+    softwareBrothers: false
   },
   
 });
