@@ -6,15 +6,16 @@ var logger = require('morgan');
 var session = require('express-session');
 require('dotenv').config();
 
-const AdminBro = require('admin-bro');
-const AdminBroMongoose = require('@admin-bro/mongoose');
-const AdminBroExpress = require('@admin-bro/express');
+// const AdminBro = require('admin-bro');
+// const AdminBroMongoose = require('@admin-bro/mongoose');
+// const AdminBroExpress = require('@admin-bro/express');
 
 // var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var usersRouter = require('./routes/user.route.js');
 var productRouter = require('./routes/product.route');
 
 const Products = require('./models/product.model');
+const verifyToken = require('./middlewares/verifyToken.js');
 
 var app = express();
 
@@ -26,7 +27,7 @@ app.use(function(req, res, next) {
   );
   next();
 });
-AdminBro.registerAdapter(AdminBroMongoose);
+// AdminBro.registerAdapter(AdminBroMongoose);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -34,66 +35,61 @@ app.set('view engine', 'pug');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const adminBro = new AdminBro({
-  rootPath: '/admin',
-  logoutPath: '/admin/logout',
-  loginPath: '/admin/login',
-  resources: [Products],
-  dashboard: {
-    handler: async () => {
-      return { some: 'output' }
-    },
-    component: AdminBro.bundle('./component/my-dashboard-component')
-  },
-  branding: {
-    logo:
-      'https://i.ibb.co/JRzSXNS/logo.png',
-    companyName: 'Farmi',
-    favicon: 'https://i.ibb.co/JRzSXNS/logo.png',
-    softwareBrothers: false
-  },
+// const adminBro = new AdminBro({
+//   rootPath: '/admin',
+//   logoutPath: '/admin/logout',
+//   loginPath: '/admin/login',
+//   resources: [Products],
+//   dashboard: {
+//     handler: async () => {
+//       return { some: 'output' }
+//     },
+//     component: AdminBro.bundle('./component/my-dashboard-component')
+//   },
+//   branding: {
+//     logo:
+//       'https://i.ibb.co/JRzSXNS/logo.png',
+//     companyName: 'Farmi',
+//     favicon: 'https://i.ibb.co/JRzSXNS/logo.png',
+//     softwareBrothers: false
+//   },
   
-});
+// });
 
-const ADMIN = {
-  email: process.env.ADMIN_EMAIL,
-  password: process.env.ADMIN_PASSWORD,
-};
+// const ADMIN = {
+//   email: process.env.ADMIN_EMAIL,
+//   password: process.env.ADMIN_PASSWORD,
+// };
 
-// const router = AdminBroExpress.buildRouter(adminBro);
+// // const router = AdminBroExpress.buildRouter(adminBro);
 
-const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
-  authenticate: async (email, password) => {
-    if (ADMIN.password === password && ADMIN.email === email) {
-      return ADMIN
-    }
-    return null
-  },
-  cookieName: 'adminbro',
-  cookiePassword: 'somePassword',
-});
+// const router = AdminBroExpress.buildAuthenticatedRouter(adminBro, {
+//   authenticate: async (email, password) => {
+//     if (ADMIN.password === password && ADMIN.email === email) {
+//       return ADMIN
+//     }
+//     return null
+//   },
+//   cookieName: 'adminbro',
+//   cookiePassword: 'somePassword',
+// });
 
 
-app.use(session({
-  secret: process.env.COOKIE_SECRET,
-  resave: false,
-  saveUninitialized: true
-}));
+// app.use(session({
+//   secret: process.env.COOKIE_SECRET,
+//   resave: false,
+//   saveUninitialized: true
+// }));
 
-app.use(adminBro.options.rootPath, router);
+// app.use(adminBro.options.rootPath, router);
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/', productRouter);
+app.use('/products' ,verifyToken ,  productRouter);
 app.use('/users', usersRouter);
-
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
