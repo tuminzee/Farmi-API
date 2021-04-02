@@ -10,14 +10,20 @@ const ProductSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        stock: {
-            type: Number,
-            required: true
-        },
         price: {
             type: Number,
             required: true
-        }}, {
+        },
+        productOwnerId: {
+            // type: mongoose.Schema.Types.ObjectId,
+            type: String,
+            required: true
+        },
+        productOwnerName: {
+            type: String,
+            required: true
+        },
+    }, {
             timestamps: true
         });
 

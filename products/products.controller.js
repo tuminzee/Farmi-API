@@ -5,7 +5,7 @@ const productService = require('./product.service');
 
 /* GET users listing. */
 router.get('/', findAll);
-router.get('/:id', findOne);
+router.get('/:id', findById);
 router.post('/', create);
 
 module.exports = router;
@@ -17,7 +17,7 @@ function findAll(req, res){
     .catch(err => next(err));
 };
 
-function findOne(req, res) {
+function findById(req, res) {
     productService.getById(req.params.id)
     .then(product => product ? res.json(product) : res.sendStatus(404))
     .catch(err => next(err));

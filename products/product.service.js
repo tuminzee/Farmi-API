@@ -13,36 +13,10 @@ async function getAll() {
 }
 
 async function getById(id) {
-    return await Product.findById(id);
+    return await Product.find({productOwnerId: id});
 }
 
-
-// async function create(userParam) {
-//     // validate
-//     if (await User.findOne({ username: userParam.username })) {
-//         throw 'Username "' + userParam.username + '" is already taken';
-//     }
-
-//     const user = new User(userParam);
-
-//     // hash password
-//     if (userParam.password) {
-//         user.hash = bcrypt.hashSync(userParam.password, 10);
-//     }
-
-//     // save user
-//     await user.save();
-// }
-
-
-
 async function create(productParam) {
-    const product = new Product({
-        name: productParam.name,
-        desc: productParam.desc,
-        stock: productParam.stock,
-        price: productParam.price
-    })
-
-    await product.save()
+    const product = new Product(productParam);
+    return await product.save()
 };
