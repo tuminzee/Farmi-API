@@ -23,6 +23,10 @@ const OrderSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        productImageUrl: {
+            type: String,
+            required: true
+        },
         productPrice: {
             type: Number,
             required: true
