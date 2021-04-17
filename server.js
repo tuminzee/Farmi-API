@@ -70,6 +70,7 @@ app.use(jwt());
 app.use('/users', require('./users/users.controller'));
 app.use('/products', require('./products/products.controller'));
 app.use('/orders', require('./orders/orders.controller'));
+app.use('/carts', require('./cart/cart.controller'));
 
 
 // global error handler
