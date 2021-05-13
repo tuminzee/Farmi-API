@@ -9,4 +9,5 @@ module.exports = {
     Product: require('../products/product.model'),
     Order: require('../orders/order.model'),
     Cart: require('../cart/cart.model'),
+    Feedback: require('../feedback/feedback.model')
 };
