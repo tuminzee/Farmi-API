@@ -14,7 +14,7 @@ const AdminBro = require('admin-bro');
 const AdminBroMongoose = require('@admin-bro/mongoose');
 const AdminBroExpress = require('@admin-bro/express');
 
-const {Order, Product, User} = require('./_helpers/db');
+const {Order, Product, User, Feedback} = require('./_helpers/db');
 
 AdminBro.registerAdapter(AdminBroMongoose);
 const ADMIN = {
@@ -26,7 +26,7 @@ const adminBro = new AdminBro({
     rootPath: '/admin',
     logoutPath: '/admin/logout',
     loginPath: '/admin/login',
-    resources: [Order, Product, User],
+    resources: [Order, Product, User, Feedback],
     dashboard: {
       handler: async () => {
         return { some: 'output' }
